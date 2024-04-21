@@ -75,7 +75,10 @@ public class BarrelCtrl : MonoBehaviour
     void IndirectDamage(Vector3 pos)
     {
         // 주변에 있는 드럼통을 모두 추출
-        //Collider[] colls = Physics.OverlapSphere(pos, radius, 1 << 3);
+        // Collider[] colls = Physics.OverlapSphere(pos, radius, 1 << 3);
+        // 위 코드는 카비지 컬렉션이 발생함
+
+        // 그렇기에 가비지 컬렉션이 발생하지 않는 아래 코드를 사용
         Physics.OverlapSphereNonAlloc(pos, radius, colls, 1 << 3);
 
         foreach(var coll in colls)

@@ -14,7 +14,7 @@ public class PlayerCtrl : MonoBehaviour
     // 회전 속도 변수
     public float turnSpeed = 80.00f;
 
-    void Start()
+    IEnumerator Start()
     {
         // 컴포넌트를 추출해 변수에 대입
         tr = GetComponent<Transform>();
@@ -22,6 +22,10 @@ public class PlayerCtrl : MonoBehaviour
 
         //애니메이션 실행
         anim.Play("Idle");
+
+        turnSpeed = 0.0f;
+        yield return new WaitForSeconds(0.3f);
+        turnSpeed = 80.0f;
     }
 
     void Update()
