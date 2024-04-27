@@ -42,7 +42,7 @@ public class BarrelCtrl : MonoBehaviour
     // 충돌 시 발생하는 콜백 함수
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Bullet"))
+        if (collision.collider.CompareTag("BULLET"))
         {
             // 총알 맞은 횟수를 증가시키고 3회 이상이면 폭발 처리
             if(++hitCount == 3)

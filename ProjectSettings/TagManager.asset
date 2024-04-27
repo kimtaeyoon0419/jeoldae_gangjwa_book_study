@@ -4,7 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
+  - BULLET
+  - PUNCH
+  - MONSTER
   layers:
   - Default
   - TransparentFX
@@ -12,8 +14,8 @@ TagManager:
   - BARREL
   - Water
   - UI
-  - 
-  - 
+  - MONSTER_BODY
+  - MONSTER_PUNCH
   - 
   - 
   - 

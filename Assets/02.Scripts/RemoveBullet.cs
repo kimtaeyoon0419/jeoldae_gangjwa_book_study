@@ -11,7 +11,7 @@ public class RemoveBullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //충돌한 게임오브젝트의 태그값 비교
-        if (collision.collider.CompareTag("Bullet"))
+        if (collision.collider.CompareTag("BULLET"))
         {
             // 첫 번쨰 충돌 지점의 정보 추출
             ContactPoint cp = collision.GetContact(0);
