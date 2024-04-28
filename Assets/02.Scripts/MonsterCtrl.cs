@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // 내비게이션 기능을 사용하기 위해 추가해야 하는 네임스페이스
@@ -52,6 +53,11 @@ public class MonsterCtrl : MonoBehaviour
     {
         // 이벤트 발생 시 수행할 함수 연결
         PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+
+        // 몬스터의 상태를 체크하는 코루틴 함수 호출
+        StartCoroutine(MonsterAction());
+        // 몬스터의 상태를 체크하는 코루틴 함수 호출
+        StartCoroutine(CheckMonsterState());
     }
 
     // 스크립트가 비활성화될 때마다 호출 되는 함수
@@ -61,7 +67,7 @@ public class MonsterCtrl : MonoBehaviour
         PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
     }
 
-    private void Start()
+    private void Awake()
     {
         // 몬스터 Transform 할당
         monsterTr = GetComponent<Transform>();
@@ -77,12 +83,9 @@ public class MonsterCtrl : MonoBehaviour
 
         // BloodSprayEffect 프리팹 로드
         bloodEffect = Resources.Load<GameObject>("BloodSprayEffect");
-
-        // 몬스터의 상태를 체크하는 코루틴 함수 호출
-        StartCoroutine(MonsterAction());
-        // 몬스터의 상태를 체크하는 코루틴 함수 호출
-        StartCoroutine(CheckMonsterState());
     }
+
+    
 
     IEnumerator CheckMonsterState()
     {
@@ -153,6 +156,19 @@ public class MonsterCtrl : MonoBehaviour
                     anim.SetTrigger(hashDie);
                     // 몬스터의 Colider 컴포넌트 비활성화
                     GetComponent<CapsuleCollider>().enabled = false;
+
+                    // 일정 시간 대기 후 오브젝트 풀링으로 환원
+                    yield return new WaitForSeconds(3.0f);
+
+                    // 사망 후 다시 사용할 때를 위해 hp 값 초기화
+                    hp = 100;
+                    isDie = false;
+                    
+                    // 몬스터의 Collider 컴포넌트 활성화
+                    GetComponent<CapsuleCollider>().enabled = true;
+                    // 몬스터를 비활성화
+                    this.gameObject.SetActive(false);
+
                     break;
             }
             yield return new WaitForSeconds(0.3f);
@@ -165,22 +181,24 @@ public class MonsterCtrl : MonoBehaviour
         {
             // 충돌한 총알을 삭제
             Destroy(collision.gameObject);
-            // 피격 리액션 애니메이션 실행
-            anim.SetTrigger(hashHit);
+        }
+    }
+    public void OnDamage(Vector3 pos, Vector3 nomal)
+    {
+        // 피격 리액션 애니메이션 실행
+        anim.SetTrigger(hashHit);
+        Quaternion rot = Quaternion.LookRotation(nomal);
 
-            // 총알의 충돌 지점
-            Vector3 pos = collision.GetContact(0).point;
-            // 총알의 충돌 지점의 법선 벡터
-            Quaternion rot = Quaternion.LookRotation(-collision.GetContact(0).normal);
-            // 혈흔 효과를 생성하는 함수 호출
-            ShowBloodEffect(pos, rot);
+        // 혈흔 효과를 생성하는 함수 호출
+        ShowBloodEffect(pos, rot);
 
-            // 몬스터의 hp 차감
-            hp -= 10;
-            if(hp <= 0)
-            {
-                state = State.DIE;
-            }
+        // 몬스터의 hp 차감
+        hp -= 10;
+        if (hp <= 0)
+        {
+            state = State.DIE;
+            // 몬스터가 사망했을 때 50점을 추가
+            GameManager.instance.DisPlayScore(50);
         }
     }
 

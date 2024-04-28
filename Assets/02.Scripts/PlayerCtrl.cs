@@ -113,8 +113,13 @@ public class PlayerCtrl : MonoBehaviour
     void PlayerDie()
     {
         Debug.Log("Player Die !");
+
         // 주인공 사망 이벤트 호출(발생)
         OnPlayerDie();
+
+        // GameManager 스크립트의 IsGameOver 프로퍼티 값을 변경
+        //GameObject.Find("GameMgr").GetComponent<GameManager>().IsGameOver = true;
+        GameManager.instance.IsGameOver = true;
     }
     void DisplayHealth()
     {
