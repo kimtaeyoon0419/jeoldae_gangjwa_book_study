@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class PlayerCtrl : MonoBehaviour
     private readonly float initHp = 100.0f;
     // 현재 생명 값
     public float curHp;
+    // Hpbar 연결할 변수
+    private Image hpBar;
 
     // 델리게이트 선언
     public delegate void PlayerDieHandle();
@@ -26,8 +29,11 @@ public class PlayerCtrl : MonoBehaviour
 
     IEnumerator Start()
     {
+        // Hpbar 연결
+        hpBar = GameObject.FindGameObjectWithTag("HP_BAR")?.GetComponent<Image>();
         // Hp 초기화
         curHp = initHp;
+        DisplayHealth();
 
         // 컴포넌트를 추출해 변수에 대입
         tr = GetComponent<Transform>();
@@ -91,6 +97,8 @@ public class PlayerCtrl : MonoBehaviour
         if (curHp >= 0.0f && collision.CompareTag("PUNCH"))
         {
             curHp -= 10.0f;
+            DisplayHealth();
+
             Debug.Log($"Player hp = {curHp / initHp}");
 
             // Player의 생명이 0 이하이면 사망 처리
@@ -105,16 +113,11 @@ public class PlayerCtrl : MonoBehaviour
     void PlayerDie()
     {
         Debug.Log("Player Die !");
-
-        //// MONSTER 태태그를 가진 모든 게임오브젝트를 찾아옴
-        //GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
-        //// 모든 몬스터의 OnPlayerDie 함수를 순차적으로 호출
-        //foreach(GameObject monster in monsters)
-        //{
-        //    monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
-        //}
-
         // 주인공 사망 이벤트 호출(발생)
         OnPlayerDie();
+    }
+    void DisplayHealth()
+    {
+        hpBar.fillAmount = curHp / initHp;
     }
 }
