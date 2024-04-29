@@ -14,12 +14,13 @@ GameObject:
   - component: {fileID: 5595094422938887471}
   - component: {fileID: 5595094422938887458}
   - component: {fileID: 5595094422938887459}
+  - component: {fileID: -4140412090817916905}
   m_Layer: 3
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &639353321395904872
 Transform:
@@ -113,6 +114,22 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 0aa4112bfd022aa47919f151ba79ddc1, type: 3}
   - {fileID: 2800000, guid: d38462a18d74e454aaf079b02bc753cd, type: 3}
   radius: 10
+--- !u!208 &-4140412090817916905
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4504771353375806331}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.8, y: 1.25, z: 0.8}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8232495965542371189
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +146,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &4075694584897825490
 Transform:

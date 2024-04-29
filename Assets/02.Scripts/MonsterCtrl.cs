@@ -78,6 +78,9 @@ public class MonsterCtrl : MonoBehaviour
         // NavMeshAgent 컴포넌트 할당
         agent = GetComponent<NavMeshAgent>();
 
+        // NavMeshAgent의 자동 회전 기능 비활성화
+        agent.updateRotation = false;
+
         // Animator 컴포넌트 할당
         anim = GetComponent<Animator>();
 
@@ -85,11 +88,24 @@ public class MonsterCtrl : MonoBehaviour
         bloodEffect = Resources.Load<GameObject>("BloodSprayEffect");
     }
 
-    
+    private void Update()
+    {
+        // 목적지ㅣ까지 남은 거리로 회전 여부 판단
+        if (agent.remainingDistance >= 2.0f)
+        {
+            // 에이전트 이동 방향
+            Vector3 direction = agent.desiredVelocity;
+            // 회전 각도(퀴터니언) 산출
+            Quaternion rot = Quaternion.LookRotation(direction);
+            // 구면 선형보간 함수로 부드러운 회전 처리
+            monsterTr.rotation = Quaternion.Slerp(monsterTr.rotation, rot, Time.deltaTime);
+        }
+    }
+
 
     IEnumerator CheckMonsterState()
     {
-        while(!isDie)
+        while (!isDie)
         {
             // 0.3초 동안 중지(대기)하는 동안 제어권을 메시지 루프에 양보
             yield return new WaitForSeconds(0.3f);
@@ -97,15 +113,15 @@ public class MonsterCtrl : MonoBehaviour
             // 몬스터의 상태가 DIE일 때 코루틴을 종료
             if (state == State.DIE) yield break;
             // 몬스터와 주인공 캐릭터 사이의 거리 측정
-            float  distance = Vector3.Distance(playerTr.position, monsterTr.position);
+            float distance = Vector3.Distance(playerTr.position, monsterTr.position);
 
             // 공격 사정거리 범위로 들어왔는지 확인
-            if(distance <= attackDist )
+            if (distance <= attackDist)
             {
                 state = State.ATTACK;
             }
             // 추적 사정거리 범위로 들어왔는지 확인
-            else if(distance <= traceDist )
+            else if (distance <= traceDist)
             {
                 state = State.TRACE;
             }
@@ -117,9 +133,9 @@ public class MonsterCtrl : MonoBehaviour
     }
     IEnumerator MonsterAction()
     {
-        while(!isDie)
+        while (!isDie)
         {
-            switch(state)
+            switch (state)
             {
                 // IDLE 상태
                 case State.IDLE:
@@ -163,7 +179,7 @@ public class MonsterCtrl : MonoBehaviour
                     // 사망 후 다시 사용할 때를 위해 hp 값 초기화
                     hp = 100;
                     isDie = false;
-                    
+
                     // 몬스터의 Collider 컴포넌트 활성화
                     GetComponent<CapsuleCollider>().enabled = true;
                     // 몬스터를 비활성화
@@ -211,7 +227,7 @@ public class MonsterCtrl : MonoBehaviour
     private void OnDrawGizmos()
     {
         // 추적 사정거리 표시
-        if(state == State.TRACE)
+        if (state == State.TRACE)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(transform.position, traceDist);
